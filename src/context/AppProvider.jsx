@@ -25,15 +25,16 @@ export default function AppProvider({ children }) {
 
   const filterPlanets = useCallback(({ column, parameter, value }) => {
     let filtered = [];
+    const arrayToFilter = filteredPlanets.length > 0 ? filteredPlanets : apiData;
     if (parameter.includes('maior que')) {
-      filtered = apiData.filter((planet) => Number(planet[column]) > Number(value));
+      filtered = arrayToFilter.filter((p) => Number(p[column]) > Number(value));
     } else if (parameter.includes('menor que')) {
-      filtered = apiData.filter((planet) => Number(planet[column]) < Number(value));
+      filtered = arrayToFilter.filter((p) => Number(p[column]) < Number(value));
     } else if (parameter.includes('igual a')) {
-      filtered = apiData.filter((planet) => Number(planet[column]) === Number(value));
+      filtered = arrayToFilter.filter((p) => Number(p[column]) === Number(value));
     }
     setFilteredPlanets(filtered);
-  }, [apiData]);
+  }, [apiData, filteredPlanets]);
 
   const context = useMemo(() => ({
     apiData,
