@@ -7,6 +7,7 @@ const URL = 'https://swapi.dev/api/planets';
 
 export default function AppProvider({ children }) {
   const [apiData, setApiData] = useState([]);
+  const [nameFilter, setNameFilter] = useState('');
   // const [filteredPlanets, setFilteredPlanets] = useState([]);
 
   useEffect(() => {
@@ -23,8 +24,11 @@ export default function AppProvider({ children }) {
   }, []);
 
   const context = useMemo(() => ({
-    apiData, setApiData,
-  }), [apiData, setApiData]);
+    apiData,
+    setApiData,
+    nameFilter,
+    setNameFilter,
+  }), [apiData, setApiData, nameFilter, setNameFilter]);
 
   return (
     <AppContext.Provider value={ context }>
