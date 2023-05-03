@@ -27,14 +27,17 @@ export default function AppProvider({ children }) {
     fetchApi();
   }, []);
 
-  const filterPlanets = useCallback(({ column, comparison, value }) => {
+  const filterPlanets = useCallback((
+    { column, comparison, value },
+    array = filteredPlanets,
+  ) => {
     let filtered = [];
     if (comparison.includes('maior que')) {
-      filtered = filteredPlanets.filter((p) => Number(p[column]) > Number(value));
+      filtered = array.filter((p) => Number(p[column]) > Number(value));
     } else if (comparison.includes('menor que')) {
-      filtered = filteredPlanets.filter((p) => Number(p[column]) < Number(value));
+      filtered = array.filter((p) => Number(p[column]) < Number(value));
     } else if (comparison.includes('igual a')) {
-      filtered = filteredPlanets.filter((p) => Number(p[column]) === Number(value));
+      filtered = array.filter((p) => Number(p[column]) === Number(value));
     }
     setFilteredPlanets(filtered);
     setFiltersData({
@@ -42,22 +45,26 @@ export default function AppProvider({ children }) {
       filterByNumericValues: [...filtersData.filterByNumericValues,
         { column, comparison, value }],
     });
+    return filtered;
   }, [filteredPlanets, filtersData]);
 
-  const deleteFilter = useCallback(async (filterName) => {
+  const deleteFilter = useCallback((filterName) => {
     const newFilterData = filtersData.filterByNumericValues.filter((obj) => (
       obj.column !== filterName
     ));
-    console.log(newFilterData);
-    setFilteredPlanets(apiData);
     if (newFilterData.length > 0) {
-      newFilterData.forEach((filterObj) => filterPlanets(filterObj));
+      let arrayToFilter = [...apiData];
+      newFilterData.forEach((filterObj) => {
+        arrayToFilter = filterPlanets(filterObj, arrayToFilter);
+      });
+    } else {
+      setFilteredPlanets(apiData);
     }
     setFiltersData({
       ...filtersData,
       filterByNumericValues: newFilterData,
     });
-  }, [filtersData, filterPlanets, apiData]);
+  }, [filtersData, apiData, filterPlanets]);
 
   const deleteAllFilters = useCallback(() => {
     setFilteredPlanets(apiData);
