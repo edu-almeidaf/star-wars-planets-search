@@ -1,14 +1,28 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../context/AppProvider';
 
+const columnOptions = ['population', 'orbital_period',
+  'diameter', 'rotation_period', 'surface_water'];
+
 export default function Form() {
+  const [activeFilters, setActiveFilters] = useState(columnOptions);
   const [columnFilters, setColumnFilters] = useState({
-    column: 'population',
-    parameter: 'maior que',
+    column: activeFilters[0],
+    comparison: 'maior que',
     value: 0,
   });
 
-  const { nameFilter, setNameFilter, filterPlanets } = useContext(AppContext);
+  const { nameFilter, setNameFilter,
+    filterPlanets } = useContext(AppContext);
+
+  useEffect(() => {
+    const initialState = {
+      column: activeFilters[0],
+      comparison: 'maior que',
+      value: 0,
+    };
+    setColumnFilters(initialState);
+  }, [activeFilters]);
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
@@ -20,6 +34,8 @@ export default function Form() {
 
   const handleColumnFilters = (event) => {
     event.preventDefault();
+    console.log(columnFilters.column);
+    setActiveFilters(activeFilters.filter((el) => el !== columnFilters.column));
     filterPlanets(columnFilters);
   };
 
@@ -44,21 +60,21 @@ export default function Form() {
           value={ columnFilters.column }
           onChange={ handleChange }
         >
-          <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          {
+            activeFilters.map((option, index) => (
+              <option value={ option } key={ index }>{ option }</option>
+            ))
+          }
         </select>
       </label>
 
-      <label htmlFor="parameter">
+      <label htmlFor="comparison">
         Operador:
         <select
-          name="parameter"
-          id="parameter"
+          name="comparison"
+          id="comparison"
           data-testid="comparison-filter"
-          value={ columnFilters.parameter }
+          value={ columnFilters.comparison }
           onChange={ handleChange }
         >
           <option value="maior que">maior que</option>

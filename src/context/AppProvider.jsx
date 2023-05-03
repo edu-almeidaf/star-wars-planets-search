@@ -9,6 +9,7 @@ export default function AppProvider({ children }) {
   const [apiData, setApiData] = useState([]);
   const [nameFilter, setNameFilter] = useState('');
   const [filteredPlanets, setFilteredPlanets] = useState([]);
+  const [filtersData, setFiltersData] = useState([]);
 
   useEffect(() => {
     const fetchApi = async () => {
@@ -23,27 +24,31 @@ export default function AppProvider({ children }) {
     fetchApi();
   }, []);
 
-  const filterPlanets = useCallback(({ column, parameter, value }) => {
+  const filterPlanets = useCallback(({ column, comparison, value }) => {
     let filtered = [];
     const arrayToFilter = filteredPlanets.length > 0 ? filteredPlanets : apiData;
-    if (parameter.includes('maior que')) {
+    if (comparison.includes('maior que')) {
       filtered = arrayToFilter.filter((p) => Number(p[column]) > Number(value));
-    } else if (parameter.includes('menor que')) {
+    } else if (comparison.includes('menor que')) {
       filtered = arrayToFilter.filter((p) => Number(p[column]) < Number(value));
-    } else if (parameter.includes('igual a')) {
+    } else if (comparison.includes('igual a')) {
       filtered = arrayToFilter.filter((p) => Number(p[column]) === Number(value));
     }
     setFilteredPlanets(filtered);
-  }, [apiData, filteredPlanets]);
+    setFiltersData([...filtersData, { column, comparison, value }]);
+  }, [apiData, filteredPlanets, filtersData]);
 
   const context = useMemo(() => ({
     apiData,
-    setApiData,
+    // setApiData,
     nameFilter,
     setNameFilter,
     filterPlanets,
     filteredPlanets,
-  }), [apiData, setApiData, nameFilter, setNameFilter, filterPlanets, filteredPlanets]);
+    filtersData,
+    // setFiltersData,
+  }), [apiData, nameFilter, setNameFilter, filterPlanets,
+    filteredPlanets, filtersData]);
 
   return (
     <AppContext.Provider value={ context }>
