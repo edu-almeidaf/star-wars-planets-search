@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AppContext } from '../context/AppProvider';
 
 export default function Table() {
-  const { apiData, filteredPlanets, nameFilter } = useContext(AppContext);
+  const { filteredPlanets, nameFilter } = useContext(AppContext);
   return (
     <div>
       <table>
@@ -25,51 +25,27 @@ export default function Table() {
         </thead>
         <tbody>
           {
-            filteredPlanets.length > 0 ? (
-              filteredPlanets.filter((planet) => planet.name.includes(nameFilter))
-                .map((planet) => (
-                  <tr key={ planet.name }>
-                    <td>{ planet.name }</td>
-                    <td>{ planet.rotation_period }</td>
-                    <td>{ planet.orbital_period }</td>
-                    <td>{ planet.diameter }</td>
-                    <td>{ planet.climate }</td>
-                    <td>{ planet.gravity }</td>
-                    <td>{ planet.terrain }</td>
-                    <td>{ planet.surface_water }</td>
-                    <td>{ planet.population }</td>
-                    <td>
-                      { planet.films.map((film, index) => (
-                        <span key={ index }>{film}</span>)) }
-                    </td>
-                    <td>{ planet.created }</td>
-                    <td>{ planet.edited }</td>
-                    <td>{ planet.url }</td>
-                  </tr>
-                ))
-            ) : (
-              apiData.filter((planet) => planet.name.includes(nameFilter))
-                .map((planet) => (
-                  <tr key={ planet.name }>
-                    <td>{ planet.name }</td>
-                    <td>{ planet.rotation_period }</td>
-                    <td>{ planet.orbital_period }</td>
-                    <td>{ planet.diameter }</td>
-                    <td>{ planet.climate }</td>
-                    <td>{ planet.gravity }</td>
-                    <td>{ planet.terrain }</td>
-                    <td>{ planet.surface_water }</td>
-                    <td>{ planet.population }</td>
-                    <td>
-                      { planet.films.map((film, index) => (
-                        <span key={ index }>{film}</span>)) }
-                    </td>
-                    <td>{ planet.created }</td>
-                    <td>{ planet.edited }</td>
-                    <td>{ planet.url }</td>
-                  </tr>
-                ))
-            )
+            filteredPlanets.filter((planet) => planet.name.includes(nameFilter))
+              .map((planet) => (
+                <tr key={ planet.name }>
+                  <td>{ planet.name }</td>
+                  <td>{ planet.rotation_period }</td>
+                  <td>{ planet.orbital_period }</td>
+                  <td>{ planet.diameter }</td>
+                  <td>{ planet.climate }</td>
+                  <td>{ planet.gravity }</td>
+                  <td>{ planet.terrain }</td>
+                  <td>{ planet.surface_water }</td>
+                  <td>{ planet.population }</td>
+                  <td>
+                    { planet.films.map((film, index) => (
+                      <span key={ index }>{film}</span>)) }
+                  </td>
+                  <td>{ planet.created }</td>
+                  <td>{ planet.edited }</td>
+                  <td>{ planet.url }</td>
+                </tr>
+              ))
           }
         </tbody>
       </table>

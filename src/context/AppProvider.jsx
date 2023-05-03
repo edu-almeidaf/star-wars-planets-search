@@ -22,19 +22,19 @@ export default function AppProvider({ children }) {
         return objWithoutResidents;
       });
       setApiData(dataArray);
+      setFilteredPlanets(dataArray);
     };
     fetchApi();
   }, []);
 
   const filterPlanets = useCallback(({ column, comparison, value }) => {
     let filtered = [];
-    const arrayToFilter = filteredPlanets.length > 0 ? filteredPlanets : apiData;
     if (comparison.includes('maior que')) {
-      filtered = arrayToFilter.filter((p) => Number(p[column]) > Number(value));
+      filtered = filteredPlanets.filter((p) => Number(p[column]) > Number(value));
     } else if (comparison.includes('menor que')) {
-      filtered = arrayToFilter.filter((p) => Number(p[column]) < Number(value));
+      filtered = filteredPlanets.filter((p) => Number(p[column]) < Number(value));
     } else if (comparison.includes('igual a')) {
-      filtered = arrayToFilter.filter((p) => Number(p[column]) === Number(value));
+      filtered = filteredPlanets.filter((p) => Number(p[column]) === Number(value));
     }
     setFilteredPlanets(filtered);
     setFiltersData({
@@ -42,19 +42,42 @@ export default function AppProvider({ children }) {
       filterByNumericValues: [...filtersData.filterByNumericValues,
         { column, comparison, value }],
     });
-  }, [apiData, filteredPlanets, filtersData]);
+  }, [filteredPlanets, filtersData]);
+
+  const deleteFilter = useCallback(async (filterName) => {
+    const newFilterData = filtersData.filterByNumericValues.filter((obj) => (
+      obj.column !== filterName
+    ));
+    console.log(newFilterData);
+    setFilteredPlanets(apiData);
+    if (newFilterData.length > 0) {
+      newFilterData.forEach((filterObj) => filterPlanets(filterObj));
+    }
+    setFiltersData({
+      ...filtersData,
+      filterByNumericValues: newFilterData,
+    });
+  }, [filtersData, filterPlanets, apiData]);
+
+  const deleteAllFilters = useCallback(() => {
+    setFilteredPlanets(apiData);
+    setFiltersData({
+      ...filtersData,
+      filterByNumericValues: [],
+    });
+  }, [filtersData, apiData]);
 
   const context = useMemo(() => ({
     apiData,
-    // setApiData,
     nameFilter,
     setNameFilter,
     filterPlanets,
     filteredPlanets,
     filtersData,
-    // setFiltersData,
+    deleteFilter,
+    deleteAllFilters,
   }), [apiData, nameFilter, setNameFilter, filterPlanets,
-    filteredPlanets, filtersData]);
+    filteredPlanets, filtersData, deleteFilter, deleteAllFilters]);
 
   return (
     <AppContext.Provider value={ context }>

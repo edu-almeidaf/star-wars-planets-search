@@ -12,17 +12,20 @@ export default function Form() {
     value: 0,
   });
 
-  const { nameFilter, setNameFilter,
-    filterPlanets } = useContext(AppContext);
+  const { nameFilter, setNameFilter, filterPlanets, filtersData,
+    deleteFilter, deleteAllFilters } = useContext(AppContext);
 
   useEffect(() => {
+    const filteredOptions = columnOptions.filter((option) => (
+      !filtersData.filterByNumericValues.map((item) => item.column).includes(option)));
     const initialState = {
-      column: activeFilters[0],
+      column: filteredOptions[0],
       comparison: 'maior que',
       value: 0,
     };
+    setActiveFilters(filteredOptions);
     setColumnFilters(initialState);
-  }, [activeFilters]);
+  }, [filtersData]);
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
@@ -34,71 +37,93 @@ export default function Form() {
 
   const handleColumnFilters = (event) => {
     event.preventDefault();
-    console.log(columnFilters.column);
-    setActiveFilters(activeFilters.filter((el) => el !== columnFilters.column));
     filterPlanets(columnFilters);
   };
 
   return (
-    <form onSubmit={ handleColumnFilters }>
-      <label>
-        <input
-          type="text"
-          placeholder="Filtrar por nome"
-          data-testid="name-filter"
-          value={ nameFilter }
-          onChange={ ({ target }) => setNameFilter(target.value) }
-        />
-      </label>
+    <>
+      <form onSubmit={ handleColumnFilters }>
+        <label>
+          <input
+            type="text"
+            placeholder="Filtrar por nome"
+            data-testid="name-filter"
+            value={ nameFilter }
+            onChange={ ({ target }) => setNameFilter(target.value) }
+          />
+        </label>
 
-      <label htmlFor="column">
-        Coluna:
-        <select
-          name="column"
-          id="column"
-          data-testid="column-filter"
-          value={ columnFilters.column }
-          onChange={ handleChange }
+        <label htmlFor="column">
+          Coluna:
+          <select
+            name="column"
+            id="column"
+            data-testid="column-filter"
+            value={ columnFilters.column }
+            onChange={ handleChange }
+          >
+            {
+              activeFilters.map((option, index) => (
+                <option value={ option } key={ index }>{ option }</option>
+              ))
+            }
+          </select>
+        </label>
+
+        <label htmlFor="comparison">
+          Operador:
+          <select
+            name="comparison"
+            id="comparison"
+            data-testid="comparison-filter"
+            value={ columnFilters.comparison }
+            onChange={ handleChange }
+          >
+            <option value="maior que">maior que</option>
+            <option value="menor que">menor que</option>
+            <option value="igual a">igual a</option>
+          </select>
+        </label>
+
+        <label>
+          <input
+            type="number"
+            data-testid="value-filter"
+            name="value"
+            value={ columnFilters.value }
+            onChange={ handleChange }
+          />
+        </label>
+
+        <button
+          type="submit"
+          data-testid="button-filter"
         >
-          {
-            activeFilters.map((option, index) => (
-              <option value={ option } key={ index }>{ option }</option>
-            ))
-          }
-        </select>
-      </label>
-
-      <label htmlFor="comparison">
-        Operador:
-        <select
-          name="comparison"
-          id="comparison"
-          data-testid="comparison-filter"
-          value={ columnFilters.comparison }
-          onChange={ handleChange }
-        >
-          <option value="maior que">maior que</option>
-          <option value="menor que">menor que</option>
-          <option value="igual a">igual a</option>
-        </select>
-      </label>
-
-      <label>
-        <input
-          type="number"
-          data-testid="value-filter"
-          name="value"
-          value={ columnFilters.value }
-          onChange={ handleChange }
-        />
-      </label>
-
+          Filtrar
+        </button>
+      </form>
+      <div>
+        {
+          filtersData.filterByNumericValues.map((obj, index) => (
+            <div key={ index } data-testid="filter">
+              <p>{ `${obj.column} ${obj.comparison} ${obj.value}` }</p>
+              <button
+                type="button"
+                onClick={ () => deleteFilter(obj.column) }
+              >
+                X
+              </button>
+            </div>
+          ))
+        }
+      </div>
       <button
-        type="submit"
-        data-testid="button-filter"
+        type="button"
+        onClick={ deleteAllFilters }
+        data-testid="button-remove-filters"
       >
-        Filtrar
+        Remover Filtros
       </button>
-    </form>
+    </>
   );
 }
