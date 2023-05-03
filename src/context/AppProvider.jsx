@@ -11,6 +11,7 @@ export default function AppProvider({ children }) {
   const [filteredPlanets, setFilteredPlanets] = useState([]);
   const [filtersData, setFiltersData] = useState({
     filterByNumericValues: [],
+    order: {},
   });
 
   useEffect(() => {
@@ -48,6 +49,21 @@ export default function AppProvider({ children }) {
     return filtered;
   }, [filteredPlanets, filtersData]);
 
+  const sortPlanets = useCallback(({ column, sort }) => {
+    const unknownEl = filteredPlanets.filter((e) => e[column] === 'unknown');
+    const validEL = filteredPlanets.filter((e) => e[column] !== 'unknown');
+    let arraySort = [];
+
+    if (sort.includes('ASC')) {
+      arraySort = validEL.sort((a, b) => Number(a[column]) - Number(b[column]));
+    } else if (sort.includes('DESC')) {
+      arraySort = validEL.sort((a, b) => Number(b[column]) - Number(a[column]));
+    }
+
+    setFilteredPlanets([...arraySort, ...unknownEl]);
+    setFiltersData({ ...filtersData, order: { column, sort } });
+  }, [filteredPlanets, filtersData]);
+
   const deleteFilter = useCallback((filterName) => {
     const newFilterData = filtersData.filterByNumericValues.filter((obj) => (
       obj.column !== filterName
@@ -71,6 +87,7 @@ export default function AppProvider({ children }) {
     setFiltersData({
       ...filtersData,
       filterByNumericValues: [],
+      order: {},
     });
   }, [filtersData, apiData]);
 
@@ -83,8 +100,9 @@ export default function AppProvider({ children }) {
     filtersData,
     deleteFilter,
     deleteAllFilters,
+    sortPlanets,
   }), [apiData, nameFilter, setNameFilter, filterPlanets,
-    filteredPlanets, filtersData, deleteFilter, deleteAllFilters]);
+    filteredPlanets, filtersData, deleteFilter, deleteAllFilters, sortPlanets]);
 
   return (
     <AppContext.Provider value={ context }>

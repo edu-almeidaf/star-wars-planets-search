@@ -12,8 +12,8 @@ export default function Form() {
     value: 0,
   });
 
-  const { nameFilter, setNameFilter, filterPlanets, filtersData,
-    deleteFilter, deleteAllFilters } = useContext(AppContext);
+  const { nameFilter, setNameFilter, filterPlanets,
+    filtersData } = useContext(AppContext);
 
   useEffect(() => {
     const filteredOptions = columnOptions.filter((option) => (
@@ -41,89 +41,65 @@ export default function Form() {
   };
 
   return (
-    <>
-      <form onSubmit={ handleColumnFilters }>
-        <label>
-          <input
-            type="text"
-            placeholder="Filtrar por nome"
-            data-testid="name-filter"
-            value={ nameFilter }
-            onChange={ ({ target }) => setNameFilter(target.value) }
-          />
-        </label>
+    <form onSubmit={ handleColumnFilters }>
+      <label>
+        <input
+          type="text"
+          placeholder="Filtrar por nome"
+          data-testid="name-filter"
+          value={ nameFilter }
+          onChange={ ({ target }) => setNameFilter(target.value) }
+        />
+      </label>
 
-        <label htmlFor="column">
-          Coluna:
-          <select
-            name="column"
-            id="column"
-            data-testid="column-filter"
-            value={ columnFilters.column }
-            onChange={ handleChange }
-          >
-            {
-              activeFilters.map((option, index) => (
-                <option value={ option } key={ index }>{ option }</option>
-              ))
-            }
-          </select>
-        </label>
-
-        <label htmlFor="comparison">
-          Operador:
-          <select
-            name="comparison"
-            id="comparison"
-            data-testid="comparison-filter"
-            value={ columnFilters.comparison }
-            onChange={ handleChange }
-          >
-            <option value="maior que">maior que</option>
-            <option value="menor que">menor que</option>
-            <option value="igual a">igual a</option>
-          </select>
-        </label>
-
-        <label>
-          <input
-            type="number"
-            data-testid="value-filter"
-            name="value"
-            value={ columnFilters.value }
-            onChange={ handleChange }
-          />
-        </label>
-
-        <button
-          type="submit"
-          data-testid="button-filter"
+      <label htmlFor="column">
+        Coluna:
+        <select
+          name="column"
+          id="column"
+          data-testid="column-filter"
+          value={ columnFilters.column }
+          onChange={ handleChange }
         >
-          Filtrar
-        </button>
-      </form>
-      <div>
-        {
-          filtersData.filterByNumericValues.map((obj, index) => (
-            <div key={ index } data-testid="filter">
-              <p>{ `${obj.column} ${obj.comparison} ${obj.value}` }</p>
-              <button
-                type="button"
-                onClick={ () => deleteFilter(obj.column) }
-              >
-                X
-              </button>
-            </div>
-          ))
-        }
-      </div>
+          {
+            activeFilters.map((option, index) => (
+              <option value={ option } key={ index }>{ option }</option>
+            ))
+          }
+        </select>
+      </label>
+
+      <label htmlFor="comparison">
+        Operador:
+        <select
+          name="comparison"
+          id="comparison"
+          data-testid="comparison-filter"
+          value={ columnFilters.comparison }
+          onChange={ handleChange }
+        >
+          <option value="maior que">maior que</option>
+          <option value="menor que">menor que</option>
+          <option value="igual a">igual a</option>
+        </select>
+      </label>
+
+      <label>
+        <input
+          type="number"
+          data-testid="value-filter"
+          name="value"
+          value={ columnFilters.value }
+          onChange={ handleChange }
+        />
+      </label>
+
       <button
-        type="button"
-        onClick={ deleteAllFilters }
-        data-testid="button-remove-filters"
+        type="submit"
+        data-testid="button-filter"
       >
-        Remover Filtros
+        Filtrar
       </button>
-    </>
+    </form>
   );
 }

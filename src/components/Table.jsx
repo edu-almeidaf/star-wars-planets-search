@@ -28,7 +28,7 @@ export default function Table() {
             filteredPlanets.filter((planet) => planet.name.includes(nameFilter))
               .map((planet) => (
                 <tr key={ planet.name }>
-                  <td>{ planet.name }</td>
+                  <td data-testid="planet-name">{ planet.name }</td>
                   <td>{ planet.rotation_period }</td>
                   <td>{ planet.orbital_period }</td>
                   <td>{ planet.diameter }</td>
