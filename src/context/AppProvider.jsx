@@ -9,7 +9,9 @@ export default function AppProvider({ children }) {
   const [apiData, setApiData] = useState([]);
   const [nameFilter, setNameFilter] = useState('');
   const [filteredPlanets, setFilteredPlanets] = useState([]);
-  const [filtersData, setFiltersData] = useState([]);
+  const [filtersData, setFiltersData] = useState({
+    filterByNumericValues: [],
+  });
 
   useEffect(() => {
     const fetchApi = async () => {
@@ -35,7 +37,11 @@ export default function AppProvider({ children }) {
       filtered = arrayToFilter.filter((p) => Number(p[column]) === Number(value));
     }
     setFilteredPlanets(filtered);
-    setFiltersData([...filtersData, { column, comparison, value }]);
+    setFiltersData({
+      ...filtersData,
+      filterByNumericValues: [...filtersData.filterByNumericValues,
+        { column, comparison, value }],
+    });
   }, [apiData, filteredPlanets, filtersData]);
 
   const context = useMemo(() => ({
