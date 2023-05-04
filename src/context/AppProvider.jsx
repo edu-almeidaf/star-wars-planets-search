@@ -37,7 +37,7 @@ export default function AppProvider({ children }) {
       filtered = array.filter((p) => Number(p[column]) > Number(value));
     } else if (comparison.includes('menor que')) {
       filtered = array.filter((p) => Number(p[column]) < Number(value));
-    } else if (comparison.includes('igual a')) {
+    } else {
       filtered = array.filter((p) => Number(p[column]) === Number(value));
     }
     setFilteredPlanets(filtered);
@@ -56,7 +56,7 @@ export default function AppProvider({ children }) {
 
     if (sort.includes('ASC')) {
       arraySort = validEL.sort((a, b) => Number(a[column]) - Number(b[column]));
-    } else if (sort.includes('DESC')) {
+    } else {
       arraySort = validEL.sort((a, b) => Number(b[column]) - Number(a[column]));
     }
 

@@ -13,6 +13,7 @@ export default function NumericFilters() {
               <button
                 type="button"
                 onClick={ () => deleteFilter(obj.column) }
+                data-testid="filter-delete-btn"
               >
                 X
               </button>
